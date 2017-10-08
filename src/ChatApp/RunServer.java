@@ -19,7 +19,7 @@ public class RunServer {
 
     private static final int maxClientsCount = 10;
     private static final ClientHandler[] threads = new ClientHandler[maxClientsCount];
-    private final static int PORT= 7777;
+    private final static int PORT=7777;
     //static Socket socket = null;
 
 

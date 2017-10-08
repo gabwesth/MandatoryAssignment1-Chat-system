@@ -39,6 +39,7 @@ class ClientHandler extends Thread {
             output = new PrintWriter(clientSocket.getOutputStream(), true);
 
 
+
             String join = input.nextLine();
             System.out.println(join);
             checkJoin(join);
@@ -89,7 +90,7 @@ class ClientHandler extends Thread {
             output.println("J_OK");
             System.out.println("new user: " + clientName);
 
-        } else {
+        }else {
             output.println("J_ER MissingJoin: Wrong Protocol Statemenet");
         }
     }
@@ -106,11 +107,10 @@ class ClientHandler extends Thread {
             for (int i = 0; i < maxClientsCount; i++) {
                 if (threads[i] != null && threads[i] != this) {
                     System.out.println(clientName + " entered the chat room");
-                    threads[i].output.println(clientName + " entered the chat room");
-                    threads[i].output.println("Active users: " + clientList.toString());
+                    threads[i].output.println("LIST: " + clientList.toString());
                 }
                 if (threads[i] == this) {
-                    threads[i].output.println("Active users: " + clientList.toString());
+                    threads[i].output.println("LIST: " + clientList.toString());
                 }
             }
 
@@ -161,8 +161,7 @@ class ClientHandler extends Thread {
             synchronized (this) {
                 for (int i = 0; i < maxClientsCount; i++) {
                     if (threads[i] != null && threads[i] != this) {
-                        threads[i].output.println("*** The user " + clientName + " is leaving the chat room !!! ***");
-                        threads[i].output.println("Active Users: " + clientList.toString());
+                        threads[i].output.println("LIST: " + clientList.toString());
                     }
                 }
             }

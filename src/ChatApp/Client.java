@@ -97,7 +97,7 @@ public class Client  implements Runnable {
     }
 
     public void run() {
-        while (close = false) {
+        while (close==false) {
            String responseLine = input.nextLine();
             System.out.println(responseLine);
         }
