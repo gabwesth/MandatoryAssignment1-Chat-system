@@ -26,9 +26,7 @@ public class Client implements Runnable {
     }
 
         private static void setUpClient(int portNumber,String host){
-        /*
-     * Open a socket on a given host and port. Open input and output streams.
-     */
+
             try {
                 clientSocket = new Socket(host, portNumber);
                 userInput = new Scanner(new InputStreamReader(System.in));

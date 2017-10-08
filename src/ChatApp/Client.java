@@ -1,5 +1,6 @@
 package ChatApp;
 
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.InetAddress;
 import java.net.Socket;
@@ -8,84 +9,101 @@ import java.util.Scanner;
 /**
  * Created by gabriele on 04/10/2017.
  */
-public class Client  {
+public class Client  implements Runnable {
 
-     String IP;
-     String username;
-     int host;
+    private static Socket clientSocket;
+    private static PrintWriter output;
+    private static Scanner input;
+    private static Scanner userInput = new Scanner(System.in);
+    private static Thread thread;
+    private static boolean close = false;
 
-    Scanner scanner = new Scanner(System.in);
-    Scanner input;
-    PrintWriter output;
+    String IP, username;
+    int host;
+    String sMessage, rMessage, acceptence;
 
-    String sMessage, rMessage,acceptence;
-
-    Thread thread;
 
     public static void main(String[] args) {
 
-        Client client = new Client("localhost", 7777, "gab");
-        client.start();
+        System.out.println("Enter IP: ");
+        String IP = userInput.nextLine();
+        System.out.println("Enter PORT: ");
+        int PORT = Integer.parseInt(userInput.nextLine());
+        System.out.println("Enter Username: ");
+        String username = userInput.nextLine();
+        System.out.println("Trying to Connect..");
+        System.out.println();
 
-
-    }
-
-    public Client(String IP, int host, String username) {
-        this.IP = IP;
-        this.host = host;
-        this.username = username;
-    }
-
-    public void start() {
-        connectToServer();
-        if (acceptence.equals("J_OK")){
-        runReceivingThread();
-        chat();
-        }else {
+        if (connectToServer(IP, PORT, username) == true) {
+            chat(username);
+        } else {
             System.out.println("NO J_OK message from SERVER");
         }
+
     }
 
 
-    private void connectToServer() {
+    private static boolean connectToServer(String IP, int port, String username) {
+        boolean ok = false;
         try {
-
             InetAddress inetAddress = InetAddress.getByName(IP);
-            Socket connection = new Socket(inetAddress, host);
+            clientSocket = new Socket(inetAddress, port);
 
-            input = new Scanner(connection.getInputStream());
-            output = new PrintWriter(connection.getOutputStream(), true);
+            input = new Scanner(clientSocket.getInputStream());
+            output = new PrintWriter(clientSocket.getOutputStream(), true);
 
-            output.println("JOIN " + username + ", " + IP + ":" + host);
+            output.println("JOIN " + username + ", " + IP + ":" + port);
 
-             acceptence = input.nextLine();
-             System.out.println(acceptence);
+            String acceptence = input.nextLine();
+            System.out.println(acceptence);
+
+            if (acceptence.equals("J_OK")) {
+                ok = true;
+            } else {
+                System.out.println("NO J_OK message from SERVER");
+                ok = false;
+            }
 
         } catch (Exception e) {
             e.printStackTrace();
         }
-
+        return ok;
     }
 
-    private void chat() {
-        sMessage = scanner.nextLine();
-        while (!sMessage.equals("QUIT")){
+    private static void chat(String username) {
+        try {
+            new Thread(new Client()).start();
+            String msg = null;
+            do  {
+                msg = userInput.nextLine();
+                output.println("DATA " + username + ": " + msg);
 
-            output.println("DATA "+username+": "+sMessage);
-            sMessage = scanner.nextLine();
+                if(msg.equals("QUIT")){
+                    break;
+                }
+            }while(msg != null);
+            output.println("QUIT");
+            System.out.println("Connection Closed");
+
+            close = true;
+            output.close();
+            input.close();
+            clientSocket.close();
+
+
+        } catch (IOException ioe) {
+            ioe.printStackTrace();
         }
-
-        output.println("QUIT");
     }
 
-    private void runReceivingThread(){
-        thread = new Thread(()->{
-            while (true){
-             if(input.hasNextLine()){
-                 System.out.println(input.nextLine());
-             }}}
-        );
-        thread.start();
+    public void run() {
+        while (close = false) {
+           String responseLine = input.nextLine();
+            System.out.println(responseLine);
+        }
     }
 
 }
+
+
+
