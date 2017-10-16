@@ -60,7 +60,6 @@ public class Client  implements Runnable {
             if (acceptence.equals("J_OK")) {
                 ok = true;
             } else {
-                System.out.println("NO J_OK message from SERVER");
                 ok = false;
             }
 
@@ -75,12 +74,14 @@ public class Client  implements Runnable {
             new Thread(new Client()).start();
             String msg = null;
             do  {
+
                 msg = userInput.nextLine();
                 output.println("DATA " + username + ": " + msg);
 
                 if(msg.equals("QUIT")){
                     break;
                 }
+
             }while(msg != null);
             output.println("QUIT");
             System.out.println("Connection Closed");

@@ -1,5 +1,6 @@
 
 
+
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.lang.reflect.Array;
@@ -38,8 +39,6 @@ class ClientHandler extends Thread {
             input = new Scanner(clientSocket.getInputStream());
             output = new PrintWriter(clientSocket.getOutputStream(), true);
 
-
-
             String join = input.nextLine();
             System.out.println(join);
             checkJoin(join);
@@ -57,24 +56,8 @@ class ClientHandler extends Thread {
         }
     }
 
-    //        String received;
-//        do{
-//            received = input.nextLine();
-//            output.println("ECHO: " + received);
-//
-//        }while (!received.equals("QUIT"));
-//
-//        try {
-//            if(client!=null){
-//                System.out.println("closing down connection");
-//                client.close();
-//            }
-//
-//        }catch (IOException ioe){
-//            System.out.println("unable to disconnect");
-//        }
-
     private void checkJoin(String join) {
+        System.out.println("here");
         String[] splitArray = join.split(", ");
         String one = splitArray[0];
         String[] divideOne = one.split(" ");
